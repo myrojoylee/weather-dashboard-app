@@ -1,6 +1,141 @@
+/* ================================================== */
+/*           -------------- RESET ------------        */
+/* ================================================== */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   font-size: 16px;
+  border: none;
+}
+
+/* ================================================== */
+/*           ------------ VARIABLES ----------        */
+/* ================================================== */
+
+:root {
+  --ff--body: sans-serif;
+
+  --clr--header-dark: rgb(37, 19, 96);
+  --clr--header-light: rgb(70, 90, 184);
+  --clr--button-search: rgb(105, 145, 227);
+  --clr--button-city: rgb(174, 174, 175);
+  --clr--forecast-box: rgb(50, 61, 79);
+
+  --clr--font-dark: black;
+  --clr--font-light: white;
+}
+
+body {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  font-family: var(--ff--body);
+  /* margin: auto; */
+}
+
+.wrapper {
+  display: grid;
+  grid-template-areas:
+    "header header"
+    "aside weather-today"
+    "aside five-day";
+  grid-template-rows: 1fr 10fr;
+  grid-template-columns: 1fr 4fr;
+  width: 90vw;
+  height: 50vw;
+  max-height: 90vh;
+  border: 1px solid black;
+}
+
+header {
+  grid-area: header;
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  background-image: linear-gradient(
+    to right,
+    rgb(70, 90, 184),
+    rgb(37, 19, 96)
+  );
+  color: var(--clr--font-light);
+}
+
+main {
+  padding: 0.5em;
+}
+
+.weather-today {
+  grid-area: weather-today;
+  display: grid;
+  gap: 1em;
+  border: 1px solid black;
+  padding: 0 0.25em 1em 0.25em;
+}
+
+.five-day-forecast {
+  grid-area: five-day;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+}
+
+.five-day-forecast h2 {
+  padding: 0.5em 0;
+}
+
+.forecast-boxes {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5em;
+}
+
+.forecast-boxes article {
+  display: grid;
+  grid-template-rows: repeat(5, 1fr);
+  background-color: var(--clr--forecast-box);
+  color: var(--clr--font-light);
+  padding: 0.25em;
+}
+
+aside {
+  grid-area: aside;
+  display: grid;
+  grid-template-rows: 1fr 4fr;
+  padding: 0.5em;
+  gap: 0.5em;
+}
+
+.city-search-box {
+  display: grid;
+  gap: 0.5em;
+}
+
+#city-search-box {
+  border: 1px solid lightgrey;
+  border-radius: 0.25em;
+  padding: 0.25em;
+}
+
+.search,
+.city-name {
+  width: 100%;
+  padding: 0.25em;
+  border-radius: 0.25em;
+}
+
+.search {
+  background-color: var(--clr--button-search);
+  color: var(--clr--font-light);
+}
+
+.city-search-history {
+  border-top: 1px solid lightgrey;
+  padding: 0.5em 0;
+}
+
+.city-name {
+  background-color: var(--clr--button-city);
 }

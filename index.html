@@ -12,6 +12,78 @@
     <title>Weather Dashboard App</title>
   </head>
   <body>
+    <div class="wrapper">
+      <header>
+        <h1>Weather Dashboard</h1>
+      </header>
+      <main>
+        <section class="weather-today">
+          <h2>
+            City <span class="current-date">(MM/DD/YYYY)</span
+            ><span class="current-weather-icon"> ☀️</span>
+          </h2>
+          <p class="temperature">Temp: <span>100</span> ℉</p>
+          <p class="wind-speed">Wind: <span>10.0</span> MPH</p>
+          <p class="humidity">Humidity: <span>88</span> %</p>
+        </section>
+        <section class="five-day-forecast">
+          <h2>5-Day Forecast:</h2>
+          <div class="forecast-boxes">
+            <article>
+              <p class="date">MM/DD/YYYY</p>
+              <span>☀️</span>
+              <p class="temperature">Temp:<span></span></p>
+              <p class="wind-speed">Wind:</p>
+              <p class="humidity">Humidity</p>
+            </article>
+            <article>
+              <p class="date">MM/DD/YYYY</p>
+              <span>☀️</span>
+              <p class="temperature">Temp:<span></span></p>
+              <p class="wind-speed">Wind:</p>
+              <p class="humidity">Humidity</p>
+            </article>
+            <article>
+              <p class="date">MM/DD/YYYY</p>
+              <span>☀️</span>
+              <p class="temperature">Temp:<span></span></p>
+              <p class="wind-speed">Wind:</p>
+              <p class="humidity">Humidity</p>
+            </article>
+            <article>
+              <p class="date">MM/DD/YYYY</p>
+              <span>☀️</span>
+              <p class="temperature">Temp:<span></span></p>
+              <p class="wind-speed">Wind:</p>
+              <p class="humidity">Humidity</p>
+            </article>
+            <article>
+              <p class="date">MM/DD/YYYY</p>
+              <span>☀️</span>
+              <p class="temperature">Temp:<span></span></p>
+              <p class="wind-speed">Wind:</p>
+              <p class="humidity">Humidity</p>
+            </article>
+          </div>
+        </section>
+      </main>
+      <aside class="city-search-bar">
+        <section class="city-search-box">
+          <h2>Search for a City:</h2>
+          <input
+            type="text"
+            name="city-name"
+            id="city-search-box"
+            placeholder="Philadelphia"
+          />
+          <button class="search">Search</button>
+        </section>
+        <section class="city-search-history">
+          <button class="city-name">City</button>
+        </section>
+      </aside>
+    </div>
+
     <script src="./assets/js/script.js"></script>
   </body>
 </html>
