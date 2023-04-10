@@ -42,13 +42,18 @@ body {
     "header header"
     "aside weather-today"
     "aside five-day";
+
   grid-template-rows: 1fr 10fr;
   grid-template-columns: 1fr 4fr;
   width: 90vw;
-  height: 50vw;
-  max-height: 90vh;
+  height: fit-content;
+  /* max-height: 90vh; */
   border: 1px solid black;
 }
+
+/* ================================================== */
+/*             ------------ Header ----------         */
+/* ================================================== */
 
 header {
   grid-area: header;
@@ -63,7 +68,14 @@ header {
   color: var(--clr--font-light);
 }
 
+/* ================================================== */
+/*           ---------- MAIN CONTENT ---------        */
+/* ================================================== */
+
 main {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
   padding: 0.5em;
 }
 
@@ -73,6 +85,7 @@ main {
   gap: 1em;
   border: 1px solid black;
   padding: 0 0.25em 1em 0.25em;
+  width: 100%;
 }
 
 .five-day-forecast {
@@ -80,6 +93,7 @@ main {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
+  /* height: 100%; */
 }
 
 .five-day-forecast h2 {
@@ -100,12 +114,17 @@ main {
   padding: 0.25em;
 }
 
+/* ================================================== */
+/*    ---------- ASIDE SEARCH BAR/HISTORY -------     */
+/* ================================================== */
+
 aside {
   grid-area: aside;
   display: grid;
   grid-template-rows: 1fr 4fr;
   padding: 0.5em;
   gap: 0.5em;
+  width: 100%;
 }
 
 .city-search-box {
@@ -114,6 +133,7 @@ aside {
 }
 
 #city-search-box {
+  display: grid;
   border: 1px solid lightgrey;
   border-radius: 0.25em;
   padding: 0.25em;
@@ -121,8 +141,11 @@ aside {
 
 .search,
 .city-name {
+  display: grid;
+  justify-content: center;
+  align-content: center;
   width: 100%;
-  padding: 0.25em;
+  padding: 0.25em 0;
   border-radius: 0.25em;
 }
 
@@ -138,4 +161,25 @@ aside {
 
 .city-name {
   background-color: var(--clr--button-city);
+}
+
+/* ================================================== */
+/*     -------- RESPONSIVE STYLING, tablet -------    */
+/* ================================================== */
+
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+  .forecast-boxes {
+    grid-template: 1fr 1fr / repeat(3, 1fr);
+    gap: 0.5em;
+  }
+}
+
+/* ================================================== */
+/*     -------- RESPONSIVE STYLING, mobile -------    */
+/* ================================================== */
+
+@media screen and (max-width: 767px) {
+  .forecast-boxes {
+    grid-template: repeat(5, 1fr) / 1fr;
+  }
 }
