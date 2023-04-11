@@ -18,10 +18,12 @@
       </header>
       <main>
         <section class="weather-today">
-          <h2 class="current-city">
-            City <span class="current-date">(MM/DD/YYYY)</span
-            ><span class="current-weather-icon"> ☀️</span>
-          </h2>
+          <div class="current-day-info-header">
+            <h2 class="current-city">City</h2>
+            <p class="current-date">(MM/DD/YYYY)</p>
+            <p class="current-weather-icon">☀️</p>
+          </div>
+
           <p class="temperature">
             Temp: <span class="current-temp">100</span> ℉
           </p>
@@ -82,7 +84,7 @@
             id="city-search-box"
             placeholder="Philadelphia"
           />
-          <button class="search">Search</button>
+          <button type="button" class="search">Search</button>
         </section>
         <section class="city-search-history">
           <button class="city-name">City</button>

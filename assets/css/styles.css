@@ -92,8 +92,16 @@ h1 {
   width: 100%;
 }
 
-.weather-today h2 {
+.weather-today h2,
+.current-date {
   font-size: 1.25em;
+  width: fit-content;
+}
+
+.current-day-info-header {
+  display: flex;
+  justify-content: start;
+  align-items: center;
 }
 
 .five-day-forecast {
@@ -160,6 +168,11 @@ aside {
 .search {
   background-color: var(--clr--button-search);
   color: var(--clr--font-light);
+  cursor: pointer;
+}
+
+.search:hover {
+  background-color: rgb(70, 90, 184);
 }
 
 .city-search-history {
