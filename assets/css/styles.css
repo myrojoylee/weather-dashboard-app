@@ -33,7 +33,6 @@ body {
   width: 100%;
   min-height: 100vh;
   font-family: var(--ff--body);
-  /* margin: auto; */
 }
 
 .wrapper {
@@ -47,8 +46,9 @@ body {
   grid-template-columns: 1fr 4fr;
   width: 90vw;
   height: fit-content;
-  /* max-height: 90vh; */
   border: 1px solid black;
+  padding: 0.5em;
+  margin: 2em;
 }
 
 /* ================================================== */
@@ -102,6 +102,7 @@ h1 {
   display: flex;
   justify-content: start;
   align-items: center;
+  gap: 1em;
 }
 
 .five-day-forecast {
@@ -109,7 +110,6 @@ h1 {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
-  /* height: 100%; */
 }
 
 .five-day-forecast h2 {
@@ -145,7 +145,13 @@ aside {
 
 .city-search-box {
   display: grid;
-  gap: 0.5em;
+  align-items: start;
+  grid-template-rows: 1fr 1fr 1fr;
+}
+
+.city-search-box h2 {
+  font-size: 1.25em;
+  height: fit-content;
 }
 
 #city-search-box {
@@ -153,19 +159,17 @@ aside {
   border: 1px solid lightgrey;
   border-radius: 0.25em;
   padding: 0.25em;
+  width: 100%;
 }
 
-.search,
-.city-name {
+.search {
   display: grid;
   justify-content: center;
   align-content: center;
   width: 100%;
-  padding: 0.25em 0;
+  height: fit-content;
+  padding: 0.5em 0;
   border-radius: 0.25em;
-}
-
-.search {
   background-color: var(--clr--button-search);
   color: var(--clr--font-light);
   cursor: pointer;
@@ -181,6 +185,7 @@ aside {
 }
 
 .city-name {
+  display: none;
   background-color: var(--clr--button-city);
 }
 
@@ -189,6 +194,9 @@ aside {
 /* ================================================== */
 
 @media screen and (min-width: 768px) and (max-width: 1023px) {
+  .wrapper {
+    grid-template-columns: 1fr 2fr;
+  }
   .forecast-boxes {
     grid-template: 1fr 1fr / repeat(3, 1fr);
     gap: 0.5em;
@@ -200,6 +208,49 @@ aside {
 /* ================================================== */
 
 @media screen and (max-width: 767px) {
+  .wrapper {
+    grid-template-areas:
+      "header"
+      "aside"
+      "main";
+
+    grid-template-rows: auto;
+    grid-template-columns: auto;
+  }
+
+  header {
+    grid-area: header;
+  }
+
+  main {
+    grid-area: main;
+  }
+
+  .current-day-info-header {
+    flex-direction: column;
+    justify-self: start;
+    align-items: start;
+    gap: 0.5em;
+  }
+
+  aside {
+    grid-area: aside;
+    grid-template-rows: auto 3fr;
+  }
+
+  .city-search-box {
+    grid-template-rows: auto;
+    gap: 1em;
+  }
+
+  .weather-today {
+    gap: 0.5em;
+  }
+  .weather-today h2,
+  .current-date {
+    font-size: 1em;
+    width: fit-content;
+  }
   .forecast-boxes {
     grid-template: repeat(5, 1fr) / 1fr;
   }

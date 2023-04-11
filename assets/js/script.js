@@ -9,7 +9,7 @@ let currentTemp = document.querySelector(".current-temp");
 let currentWindSpeed = document.querySelector(".current-wind-speed");
 let currentHumidity = document.querySelector(".current-humidity");
 let todaysDate = document.querySelector(".current-date");
-
+let citySearchHistory = document.querySelector(".city-search-history");
 // date
 
 // =================================================
@@ -32,7 +32,8 @@ search.addEventListener("click", function () {
     "https://api.openweathermap.org/data/2.5/weather?q=" +
     userCity.value +
     "&appid=" +
-    WeatherAPIKey;
+    WeatherAPIKey +
+    "&units=imperial";
   fetch(queryURL)
     .then((response) => response.json())
     .then(cityData);
@@ -40,17 +41,27 @@ search.addEventListener("click", function () {
 
 function cityData(weather) {
   console.log(weather);
-  let degK = weather.main.temp;
-  let degF = ((degK - 273.15) * (9 / 5) + 32).toFixed(1);
-  let windSpeedMetric = weather.wind.speed;
-  let windSpeedImperial = (windSpeedMetric * 2.237).toFixed(1);
+  // let degK = weather.main.temp;
+  // let degF = ((degK - 273.15) * (9 / 5) + 32).toFixed(1);
+  // let windSpeedMetric = weather.wind.speed;
+  // let windSpeedImperial = (windSpeedMetric * 2.237).toFixed(1);
   currentCity.textContent = userCity.value;
   todaysDate.textContent = ` ${currentMonth}/${currentDayOfMonth}/${currentYear}`;
-  currentTemp.textContent = `${degF}`;
-  currentWindSpeed.textContent = `${windSpeedImperial}`;
+  currentTemp.textContent = `${weather.main.temp}`;
+  currentWindSpeed.textContent = `${weather.wind.speed}`;
   currentHumidity.textContent = `${weather.main.humidity}`;
+  quickFetch();
 }
 
 function quickFetch() {
   //quick search from recent search history
+  let recentlySearched = document.createElement("button");
+  recentlySearched.textContent = `${userCity.value}`;
+  citySearchHistory.appendChild(recentlySearched);
+  recentlySearched.display = "flex";
+  recentlySearched.style.backgroundColor = "rgb(174, 174, 175)";
+  recentlySearched.style.width = "100%";
+  recentlySearched.style.padding = "0.5em";
+  recentlySearched.style.borderRadius = "0.25em";
+  citySearchHistory.appendChild(recentlySearched);
 }
