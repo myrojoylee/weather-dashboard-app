@@ -29,7 +29,7 @@ let weatherEmoji = [{ sun: "☀", cloud: "☁" }];
 // =================================================
 search.addEventListener("click", function () {
   let queryURL =
-    "http://api.openweathermap.org/data/2.5/weather?q=" +
+    "https://api.openweathermap.org/data/2.5/weather?q=" +
     userCity.value +
     "&appid=" +
     WeatherAPIKey;
