@@ -24,6 +24,13 @@ let currentHour = currentDate.getHours();
 let currentMinutes = currentDate.getMinutes();
 
 let weatherEmoji = [{ sun: "☀", cloud: "☁" }];
+let buttonCount = 0;
+let searchHistory = [];
+let temporaryStorage = [];
+let city, temp, windspeed, humidity;
+
+let recentlySearched;
+let cityClicked;
 // =================================================
 //          ------------ Code -----------
 // =================================================
@@ -36,26 +43,31 @@ search.addEventListener("click", function () {
     "&units=imperial";
   fetch(queryURL)
     .then((response) => response.json())
-    .then(cityData);
+    .then(displayCurrentWeather);
 });
 
-function cityData(weather) {
-  console.log(weather);
-  // let degK = weather.main.temp;
-  // let degF = ((degK - 273.15) * (9 / 5) + 32).toFixed(1);
-  // let windSpeedMetric = weather.wind.speed;
-  // let windSpeedImperial = (windSpeedMetric * 2.237).toFixed(1);
+function displayCurrentWeather(weather) {
   currentCity.textContent = userCity.value;
   todaysDate.textContent = ` ${currentMonth}/${currentDayOfMonth}/${currentYear}`;
   currentTemp.textContent = `${weather.main.temp}`;
   currentWindSpeed.textContent = `${weather.wind.speed}`;
   currentHumidity.textContent = `${weather.main.humidity}`;
-  quickFetch();
+
+  temporaryStorage = {
+    city: userCity.value,
+    temp: `${weather.main.temp}`,
+    windspeed: `${weather.wind.speed}`,
+    humidity: `${weather.main.humidity}`,
+  };
+
+  searchHistory.push(temporaryStorage);
+  // storageHandling();
+  renderWeatherInfo();
 }
 
-function quickFetch() {
+function renderWeatherInfo() {
   //quick search from recent search history
-  let recentlySearched = document.createElement("button");
+  recentlySearched = document.createElement("button");
   recentlySearched.textContent = `${userCity.value}`;
   citySearchHistory.appendChild(recentlySearched);
   recentlySearched.display = "flex";
@@ -63,5 +75,29 @@ function quickFetch() {
   recentlySearched.style.width = "100%";
   recentlySearched.style.padding = "0.5em";
   recentlySearched.style.borderRadius = "0.25em";
+  recentlySearched.style.marginTop = "0.5em";
+  recentlySearched.style.cursor = "pointer";
   citySearchHistory.appendChild(recentlySearched);
+  buttonCount++;
+  recentlySearched.addEventListener("click", function (e) {
+    cityClicked = e.target.textContent;
+    checkCity();
+  });
+}
+
+function storageHandling() {
+  if (localStorage !== null) {
+    searchHistory = JSON.parse(localStorage.getItem("city-info"));
+  }
+}
+
+function checkCity() {
+  for (let i = 0; i < searchHistory.length; i++) {
+    if (cityClicked === searchHistory[i].city) {
+      currentCity.textContent = searchHistory[i].city;
+      currentTemp.textContent = searchHistory[i].temp;
+      currentWindSpeed.textContent = searchHistory[i].windspeed;
+      currentHumidity.textContent = searchHistory[i].humidity;
+    }
+  }
 }
