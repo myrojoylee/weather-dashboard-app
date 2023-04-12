@@ -31,10 +31,15 @@ let city, temp, windspeed, humidity;
 
 let recentlySearched;
 let cityClicked;
+let cityToSearch;
+let newSearch = false;
 // =================================================
 //          ------------ Code -----------
 // =================================================
+
+// get weather from search
 search.addEventListener("click", function () {
+  newSearch = true;
   let queryURL =
     "https://api.openweathermap.org/data/2.5/weather?q=" +
     userCity.value +
@@ -43,32 +48,55 @@ search.addEventListener("click", function () {
     "&units=imperial";
   fetch(queryURL)
     .then((response) => response.json())
-    .then(displayCurrentWeather);
+    .then(obtainCurrentWeather);
 });
 
-function displayCurrentWeather(weather) {
-  currentCity.textContent = userCity.value;
+// get weather from search history
+function fetchWeather(cityName) {
+  let queryURL =
+    "https://api.openweathermap.org/data/2.5/weather?q=" +
+    cityName +
+    "&appid=" +
+    WeatherAPIKey +
+    "&units=imperial";
+  fetch(queryURL)
+    .then((response) => response.json())
+    .then(obtainCurrentWeather);
+}
+
+// get weather data off of api
+function obtainCurrentWeather(weather) {
+  if (newSearch === true) {
+    cityName = userCity.value;
+  }
+  currentCity.textContent = cityName;
   todaysDate.textContent = ` ${currentMonth}/${currentDayOfMonth}/${currentYear}`;
   currentTemp.textContent = `${weather.main.temp}`;
   currentWindSpeed.textContent = `${weather.wind.speed}`;
   currentHumidity.textContent = `${weather.main.humidity}`;
 
+  if (newSearch === true) {
+    storeSearchHistory();
+  }
+}
+
+function storeSearchHistory() {
   temporaryStorage = {
-    city: userCity.value,
-    temp: `${weather.main.temp}`,
-    windspeed: `${weather.wind.speed}`,
-    humidity: `${weather.main.humidity}`,
+    city: currentCity.textContent,
+    temp: `${currentTemp.textContent}`,
+    windspeed: `${currentWindSpeed.textContent}`,
+    humidity: `${currentHumidity.textContent}`,
   };
 
   searchHistory.push(temporaryStorage);
   // storageHandling();
-  renderWeatherInfo();
+  createSearchHistory();
 }
 
-function renderWeatherInfo() {
+function createSearchHistory() {
   //quick search from recent search history
   recentlySearched = document.createElement("button");
-  recentlySearched.textContent = `${userCity.value}`;
+  recentlySearched.textContent = `${cityName}`;
   citySearchHistory.appendChild(recentlySearched);
   recentlySearched.display = "flex";
   recentlySearched.style.backgroundColor = "rgb(174, 174, 175)";
@@ -91,13 +119,10 @@ function storageHandling() {
   }
 }
 
+// reading weather from cities in recent history
 function checkCity() {
-  for (let i = 0; i < searchHistory.length; i++) {
-    if (cityClicked === searchHistory[i].city) {
-      currentCity.textContent = searchHistory[i].city;
-      currentTemp.textContent = searchHistory[i].temp;
-      currentWindSpeed.textContent = searchHistory[i].windspeed;
-      currentHumidity.textContent = searchHistory[i].humidity;
-    }
-  }
+  newSearch = false;
+  cityName = cityClicked;
+  fetchWeather(cityName);
+  currentCity.textContent = cityName;
 }
