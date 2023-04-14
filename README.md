@@ -1,6 +1,6 @@
 # Weather Dashboard App
 
-================= In Progress ===================
+This is a work in progress!
 
 ## Description
 
