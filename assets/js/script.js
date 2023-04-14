@@ -10,6 +10,10 @@ const currentWindSpeed = document.querySelector(".current-wind-speed");
 const currentHumidity = document.querySelector(".current-humidity");
 const todaysDate = document.querySelector(".current-date");
 const citySearchHistory = document.querySelector(".city-search-history");
+const tempFiveDay = document.querySelectorAll(".temp");
+const windSpeedFiveDay = document.querySelectorAll(".wind");
+const humidFiveDay = document.querySelectorAll(".humid");
+const dateFiveDay = document.querySelectorAll(".date");
 // date
 
 // =================================================
@@ -29,13 +33,17 @@ let weatherEmoji = [{ sun: "☀", cloud: "☁" }];
 let buttonCount = 0;
 let searchHistory = [];
 let temporaryStorage = [];
+let fiveWeatherLines;
+let fiveDayLines;
 let city, temp, windspeed, humidity;
+let listOfTimeStamps, timeStamp, dayOfTimeStamp;
 
 let recentlySearched;
 let cityClicked;
 let cityToSearch;
-let latitude, longitude, cityCoordinate, fiveDayData;
+let latitude, longitude, cityCoordinate, fiveDayData, focusedFiveDayData;
 let timeStampDays = [];
+let dayChange = [];
 let newSearch = false;
 // =================================================
 //          ------------ Code -----------
@@ -170,22 +178,55 @@ function fetchFiveDayForecast() {
 }
 
 function unixTimeConversions() {
-  // console.log(fiveDayData);
-
+  console.log(fiveDayData);
+  focusedFiveDayData = fiveDayData.list;
+  console.log(focusedFiveDayData);
+  // cleared to not keep the previous city search data
+  timeStampDays = [];
   for (let i = 0; i < fiveDayData.list.length; i++) {
-    let listOfTimeStamps = fiveDayData.list[i].dt;
-    let timeStamp = new Date(listOfTimeStamps * 1000);
-    let dayOfTimeStamp = timeStamp.toLocaleString("en-us", { weekday: "long" });
+    listOfTimeStamps = focusedFiveDayData[i].dt;
+    timeStamp = new Date(listOfTimeStamps * 1000);
+    dayOfTimeStamp = timeStamp.toLocaleString("en-us", { weekday: "long" });
     timeStampDays.push(dayOfTimeStamp);
   }
   renderFiveDayForecast();
 }
 
 function renderFiveDayForecast() {
+  console.log(timeStampDays);
+
+  // cleared to not keep the previous city search data
+  fiveWeatherLines = [];
+  fiveDayLines = [];
+
+  console.log(fiveWeatherLines);
+  console.log(fiveDayLines);
   for (let i = 0; i < timeStampDays.length - 1; i++) {
     if (timeStampDays[i] !== timeStampDays[i + 1]) {
-      console.log(`${timeStampDays[i]} is on index ${i}`);
-      console.log(`${timeStampDays[i + 1]} is on index ${i + 1}`);
+      fiveWeatherLines.push(focusedFiveDayData[i + 1]);
+      console.log(fiveWeatherLines);
+      fiveDayLines.push(timeStampDays[i + 1]);
+      // console.log(`${timeStampDays[i + 1]} is on index ${i + 1}`);
     }
+  }
+  console.log(fiveWeatherLines);
+  console.log(fiveDayLines);
+
+  for (let i = 0; i < fiveWeatherLines.length; i++) {
+    const options = {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+    };
+    dateFiveDay[i].textContent = `${new Date(
+      fiveWeatherLines[i].dt * 1000
+    ).toLocaleString("en-US", options)}`;
+    tempFiveDay[i].textContent = `Temp: ${fiveWeatherLines[i].main.temp} ℉`;
+    windSpeedFiveDay[
+      i
+    ].textContent = `Wind: ${fiveWeatherLines[i].wind.speed} MPH`;
+    humidFiveDay[
+      i
+    ].textContent = `Humidity: ${fiveWeatherLines[i].main.humidity} %`;
   }
 }
