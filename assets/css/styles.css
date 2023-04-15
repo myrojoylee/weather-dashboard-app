@@ -26,6 +26,10 @@
   --clr--font-light: white;
 }
 
+/* ================================================== */
+/*            ------------ STYLING ----------         */
+/* ================================================== */
+
 body {
   display: grid;
   justify-content: center;
@@ -45,7 +49,7 @@ body {
   grid-template-rows: 1fr 10fr;
   grid-template-columns: 1fr 4fr;
   width: 90vw;
-  height: fit-content;
+  /* height: fit-content; */
   border: 1px solid black;
   padding: 0.5em;
   margin: 2em;
@@ -74,7 +78,6 @@ header {
 
 main {
   display: flex;
-  height: 100%;
   flex-direction: column;
   padding: 0.5em 0 0 0.5em;
 }
@@ -122,6 +125,14 @@ h1 {
   gap: 0.5em;
 }
 
+.current-weather-icon {
+  width: 7%;
+}
+
+.icon {
+  width: 25%;
+}
+
 .forecast-boxes article {
   display: grid;
   grid-template-rows: repeat(5, 1fr);
@@ -158,7 +169,7 @@ aside {
   display: grid;
   border: 1px solid lightgrey;
   border-radius: 0.25em;
-  padding: 0.25em;
+  padding: 0.25em 0.5em;
   width: 100%;
 }
 
@@ -201,6 +212,10 @@ aside {
     grid-template: 1fr 1fr / repeat(3, 1fr);
     gap: 0.5em;
   }
+
+  .icon {
+    width: 20%;
+  }
 }
 
 /* ================================================== */
@@ -223,6 +238,7 @@ aside {
   }
 
   main {
+    padding: 0.5em 0 0;
     grid-area: main;
   }
 
@@ -253,6 +269,14 @@ aside {
   }
   .forecast-boxes {
     grid-template: repeat(5, 1fr) / 1fr;
+  }
+
+  .current-weather-icon {
+    width: 30%;
+  }
+
+  .icon {
+    width: 7%;
   }
 
   .five-day-forecast p {

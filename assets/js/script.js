@@ -1,20 +1,22 @@
-// weather variables
+// =================================================
+// DOM element selector variables
+// =================================================
 
 const WeatherAPIKey = "021e75b0e3380e236b4ff6031ae2dde4";
-
 const userCity = document.querySelector("#city-search-box");
 const search = document.querySelector(".search");
 const currentCity = document.querySelector(".current-city");
 const currentTemp = document.querySelector(".current-temp");
 const currentWindSpeed = document.querySelector(".current-wind-speed");
 const currentHumidity = document.querySelector(".current-humidity");
+const currentWeatherIcon = document.querySelector(".current-weather-icon");
 const todaysDate = document.querySelector(".current-date");
 const citySearchHistory = document.querySelector(".city-search-history");
 const tempFiveDay = document.querySelectorAll(".temp");
 const windSpeedFiveDay = document.querySelectorAll(".wind");
 const humidFiveDay = document.querySelectorAll(".humid");
 const dateFiveDay = document.querySelectorAll(".date");
-// date
+const iconFiveDay = document.querySelectorAll(".icon");
 
 // =================================================
 // Time and date variables
@@ -24,9 +26,8 @@ let currentYear = currentDate.getFullYear();
 let currentMonth = currentDate.getMonth() + 1;
 let currentDayOfMonth = currentDate.getDate();
 let currentUnixTime = Date.now();
-let diffInUnixTime;
+// let diffInUnixTime;
 
-let weatherEmoji = [{ sun: "☀", cloud: "☁" }];
 let buttonCount = 0;
 let searchHistory = [];
 let temporaryStorage = [];
@@ -37,11 +38,19 @@ let listOfTimeStamps, timeStamp, dayOfTimeStamp;
 
 let recentlySearched;
 let cityClicked;
-let cityToSearch;
+let cityToSearch, weatherIcon, fiveDayWeatherIcon;
 let latitude, longitude, cityCoordinate, fiveDayData, focusedFiveDayData;
 let timeStampDays = [];
 let dayChange = [];
 let newSearch = false;
+
+// let weatherIcons = [
+//   {
+//     description: "clear sky",
+//     id: "01d",
+//     url: "",
+//   },
+// ];
 // =================================================
 //          ------------ Code -----------
 // =================================================
@@ -75,17 +84,19 @@ function fetchWeather(cityName) {
 
 // get weather data off of api
 function obtainCurrentWeather(weather) {
-  console.log(weather);
+  // console.log(weather.weather[0].icon);
   if (newSearch === true) {
     cityName = userCity.value;
     cityToSearch = userCity.value;
   }
+  weatherIcon = weather.weather[0].icon;
   cityToSearch = cityName;
   currentCity.textContent = cityName;
   todaysDate.textContent = ` ${currentMonth}/${currentDayOfMonth}/${currentYear}`;
   currentTemp.textContent = `${weather.main.temp}`;
   currentWindSpeed.textContent = `${weather.wind.speed}`;
   currentHumidity.textContent = `${weather.main.humidity}`;
+  currentWeatherIcon.src = `https://openweathermap.org/img/wn/${weatherIcon}.png`;
 
   getCoordinatesFromLocation(cityToSearch);
 
@@ -194,12 +205,9 @@ function renderFiveDayForecast() {
   fiveWeatherLines = [];
   fiveDayLines = [];
 
-  console.log(fiveWeatherLines);
-  console.log(fiveDayLines);
   for (let i = 0; i < timeStampDays.length - 1; i++) {
     if (timeStampDays[i] !== timeStampDays[i + 1]) {
       fiveWeatherLines.push(focusedFiveDayData[i + 1]);
-      console.log(fiveWeatherLines);
       fiveDayLines.push(timeStampDays[i + 1]);
     }
   }
@@ -210,6 +218,8 @@ function renderFiveDayForecast() {
       month: "numeric",
       day: "numeric",
     };
+
+    fiveDayWeatherIcon = fiveWeatherLines[i].weather[0].icon;
     dateFiveDay[i].textContent = `${new Date(
       fiveWeatherLines[i].dt * 1000
     ).toLocaleString("en-US", options)}`;
@@ -220,5 +230,8 @@ function renderFiveDayForecast() {
     humidFiveDay[
       i
     ].textContent = `Humidity: ${fiveWeatherLines[i].main.humidity} %`;
+    iconFiveDay[
+      i
+    ].src = `https://openweathermap.org/img/wn/${fiveDayWeatherIcon}.png`;
   }
 }
