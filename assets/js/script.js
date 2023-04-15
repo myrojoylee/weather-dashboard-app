@@ -21,11 +21,8 @@ const dateFiveDay = document.querySelectorAll(".date");
 // =================================================
 let currentDate = new Date();
 let currentYear = currentDate.getFullYear();
-// let twoDigitYear = Number(currentYear.toString().slice(2, 4));
 let currentMonth = currentDate.getMonth() + 1;
 let currentDayOfMonth = currentDate.getDate();
-// let currentHour = currentDate.getHours();
-// let currentMinutes = currentDate.getMinutes();
 let currentUnixTime = Date.now();
 let diffInUnixTime;
 
@@ -83,6 +80,7 @@ function obtainCurrentWeather(weather) {
     cityName = userCity.value;
     cityToSearch = userCity.value;
   }
+  cityToSearch = cityName;
   currentCity.textContent = cityName;
   todaysDate.textContent = ` ${currentMonth}/${currentDayOfMonth}/${currentYear}`;
   currentTemp.textContent = `${weather.main.temp}`;
@@ -178,9 +176,8 @@ function fetchFiveDayForecast() {
 }
 
 function unixTimeConversions() {
-  console.log(fiveDayData);
   focusedFiveDayData = fiveDayData.list;
-  console.log(focusedFiveDayData);
+
   // cleared to not keep the previous city search data
   timeStampDays = [];
   for (let i = 0; i < fiveDayData.list.length; i++) {
@@ -193,8 +190,6 @@ function unixTimeConversions() {
 }
 
 function renderFiveDayForecast() {
-  console.log(timeStampDays);
-
   // cleared to not keep the previous city search data
   fiveWeatherLines = [];
   fiveDayLines = [];
@@ -206,11 +201,8 @@ function renderFiveDayForecast() {
       fiveWeatherLines.push(focusedFiveDayData[i + 1]);
       console.log(fiveWeatherLines);
       fiveDayLines.push(timeStampDays[i + 1]);
-      // console.log(`${timeStampDays[i + 1]} is on index ${i + 1}`);
     }
   }
-  console.log(fiveWeatherLines);
-  console.log(fiveDayLines);
 
   for (let i = 0; i < fiveWeatherLines.length; i++) {
     const options = {
