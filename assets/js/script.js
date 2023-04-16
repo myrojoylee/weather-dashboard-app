@@ -29,6 +29,7 @@ let currentUnixTime = Date.now();
 // let diffInUnixTime;
 
 let buttonCount = 0;
+let buttonId = [];
 let searchHistory = [];
 let temporaryStorage = [];
 let fiveWeatherLines;
@@ -44,20 +45,12 @@ let timeStampDays = [];
 let dayChange = [];
 let newSearch = false;
 
-// let weatherIcons = [
-//   {
-//     description: "clear sky",
-//     id: "01d",
-//     url: "",
-//   },
-// ];
 // =================================================
 //          ------------ Code -----------
 // =================================================
 
 // get weather from search
 search.addEventListener("click", function () {
-  newSearch = true;
   let dailyForecastURL =
     "https://api.openweathermap.org/data/2.5/weather?q=" +
     userCity.value +
@@ -67,6 +60,30 @@ search.addEventListener("click", function () {
   fetch(dailyForecastURL)
     .then((response) => response.json())
     .then(obtainCurrentWeather);
+
+  if (searchHistory.length > 0) {
+    if (searchHistory.includes(userCity.value) === false) {
+      if (buttonCount > 7) {
+        searchHistory.shift();
+        searchHistory.push(userCity.value);
+        document.getElementById(buttonId[0]).remove();
+        buttonId.shift();
+      } else {
+        searchHistory.push(userCity.value);
+        buttonCount++;
+        console.log(buttonCount);
+      }
+      newSearch = true;
+    } else {
+      newSearch = false;
+    }
+  } else {
+    searchHistory.push(userCity.value);
+    newSearch = true;
+    buttonCount++;
+  }
+
+  // console.log(searchHistory);
 });
 
 // get weather from search history
@@ -84,14 +101,17 @@ function fetchWeather(cityName) {
 
 // get weather data off of api
 function obtainCurrentWeather(weather) {
-  // console.log(weather.weather[0].icon);
   if (newSearch === true) {
     cityName = userCity.value;
     cityToSearch = userCity.value;
+    currentCity.textContent = cityName;
+  } else {
+    cityClicked === userCity.value;
+    currentCity.textContent = cityClicked;
   }
+
   weatherIcon = weather.weather[0].icon;
-  cityToSearch = cityName;
-  currentCity.textContent = cityName;
+  // cityToSearch = cityName;
   todaysDate.textContent = ` ${currentMonth}/${currentDayOfMonth}/${currentYear}`;
   currentTemp.textContent = `${weather.main.temp}`;
   currentWindSpeed.textContent = `${weather.wind.speed}`;
@@ -113,41 +133,60 @@ function storeSearchHistory() {
     humidity: `${currentHumidity.textContent}`,
   };
 
-  searchHistory.push(temporaryStorage);
+  // if (localStorage.length !== 0) {
+  //   if (localStorage.length > 7) {
+  //     searchHistory.shift();
+  //     searchHistory.push(temporaryStorage);
+  //   } else {
+  //     searchHistory.push(temporaryStorage);
+  //   }
+  // }
+
   // storageHandling();
   createSearchHistory();
 }
 
 function createSearchHistory() {
   //quick search from recent search history
-  recentlySearched = document.createElement("button");
-  recentlySearched.textContent = `${cityName}`;
-  citySearchHistory.appendChild(recentlySearched);
-  recentlySearched.display = "flex";
-  recentlySearched.style.backgroundColor = "rgb(174, 174, 175)";
-  recentlySearched.style.width = "100%";
-  recentlySearched.style.padding = "0.5em";
-  recentlySearched.style.borderRadius = "0.25em";
-  recentlySearched.style.marginTop = "0.5em";
-  recentlySearched.style.cursor = "pointer";
-  citySearchHistory.appendChild(recentlySearched);
-  buttonCount++;
+  // console.log(searchHistory);
+  if (newSearch === true) {
+    let idButton = searchHistory[searchHistory.length - 1];
+    let tempId = idButton.toLowerCase();
+    buttonId.push(tempId);
+    console.log(buttonId);
+    recentlySearched = document.createElement("button");
+    recentlySearched.textContent = `${searchHistory[searchHistory.length - 1]}`;
+    citySearchHistory.appendChild(recentlySearched);
+    recentlySearched.display = "flex";
+    recentlySearched.style.backgroundColor = "rgb(174, 174, 175)";
+    recentlySearched.style.width = "100%";
+    recentlySearched.style.padding = "0.5em";
+    recentlySearched.style.borderRadius = "0.25em";
+    recentlySearched.style.marginTop = "0.5em";
+    recentlySearched.style.cursor = "pointer";
+    recentlySearched.setAttribute("id", tempId);
+    citySearchHistory.appendChild(recentlySearched);
+  }
+
   recentlySearched.addEventListener("click", function (e) {
     cityClicked = e.target.textContent;
+    console.log(searchHistory);
     checkCity();
   });
 }
 
-function storageHandling() {
-  if (localStorage !== null) {
-    searchHistory = JSON.parse(localStorage.getItem("city-info"));
-  }
-}
+// function storageHandling() {
+//   if (localStorage !== null) {
+//     searchHistory = JSON.parse(localStorage.getItem("city-info"));
+//   }
+// }
 
 // reading weather from cities in recent history
 function checkCity() {
   newSearch = false;
   cityName = cityClicked;
+  // searchHistory.push(cityName);
+
   fetchWeather(cityName);
   currentCity.textContent = cityName;
 }

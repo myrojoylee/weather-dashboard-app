@@ -83,22 +83,40 @@ main {
 }
 
 h1 {
-  font-size: 1.5em;
+  font-size: 2.25em;
+  text-align: center;
 }
 
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+/*      Current weather styles     */
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 .weather-today {
   grid-area: weather-today;
   display: grid;
-  gap: 1em;
   border: 1px solid black;
-  padding: 0 0.25em 1em 0.25em;
+  padding: 0 0.25em 0.5em 0.25em;
   width: 100%;
+  gap: 1em;
 }
 
-.weather-today h2,
-.current-date {
-  font-size: 1.25em;
-  width: fit-content;
+.weather-today h2 {
+  font-size: 2em;
+  font-weight: bold;
+  height: 100%;
+  display: flex;
+  align-items: end;
+}
+
+.current-day-info-header p,
+.weather-today p {
+  font-size: 1.75em;
+  margin: 0;
+}
+
+.current-temp,
+.current-wind-speed,
+.current-humidity {
+  font-size: 1em;
 }
 
 .current-day-info-header {
@@ -107,6 +125,9 @@ h1 {
   align-items: center;
   gap: 1em;
 }
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+/*     Five-day forecast styles    */
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 .five-day-forecast {
   grid-area: five-day;
@@ -126,7 +147,7 @@ h1 {
 }
 
 .current-weather-icon {
-  width: 7%;
+  width: 50px;
 }
 
 .icon {
@@ -135,10 +156,23 @@ h1 {
 
 .forecast-boxes article {
   display: grid;
-  grid-template-rows: repeat(5, 1fr);
+  grid-template-rows: 0.75fr 1fr 0.75fr 0.75fr 0.75fr;
+  align-items: center;
   background-color: var(--clr--forecast-box);
   color: var(--clr--font-light);
   padding: 0.25em;
+  gap: 0.5em;
+}
+
+.forecast-boxes p {
+  margin: 0;
+}
+
+.date,
+.temp,
+.wind,
+.humid {
+  font-size: 1.5em;
 }
 
 /* ================================================== */
@@ -158,10 +192,12 @@ aside {
   display: grid;
   align-items: start;
   grid-template-rows: 1fr 1fr 1fr;
+  gap: 0.5em;
 }
 
 .city-search-box h2 {
   font-size: 1.25em;
+  padding: 0.25em;
   height: fit-content;
 }
 
@@ -171,6 +207,7 @@ aside {
   border-radius: 0.25em;
   padding: 0.25em 0.5em;
   width: 100%;
+  height: 40px;
 }
 
 .search {
@@ -192,7 +229,7 @@ aside {
 
 .city-search-history {
   border-top: 1px solid lightgrey;
-  padding: 0.5em 0;
+  /* padding: 0.5em 0; */
 }
 
 .city-name {
@@ -208,6 +245,28 @@ aside {
   .wrapper {
     grid-template-columns: 1fr 2fr;
   }
+
+  h1 {
+    font-size: 2em;
+  }
+
+  .weather-today h2 {
+    font-size: 1.75em;
+    height: 80%;
+  }
+
+  .current-day-info-header p,
+  .weather-today p {
+    font-size: 1.5em;
+    margin: 0;
+  }
+
+  .current-temp,
+  .current-wind-speed,
+  .current-humidity {
+    font-size: 1em;
+  }
+
   .forecast-boxes {
     grid-template: 1fr 1fr / repeat(3, 1fr);
     gap: 0.5em;
@@ -215,6 +274,13 @@ aside {
 
   .icon {
     width: 20%;
+  }
+
+  .date,
+  .temp,
+  .wind,
+  .humid {
+    font-size: 1.25em;
   }
 }
 
@@ -229,7 +295,7 @@ aside {
       "aside"
       "main";
 
-    grid-template-rows: auto;
+    grid-template-rows: 1fr 5fr auto;
     grid-template-columns: auto;
   }
 
@@ -240,6 +306,27 @@ aside {
   main {
     padding: 0.5em 0 0;
     grid-area: main;
+    grid-template-rows: auto;
+  }
+
+  h1 {
+    font-size: 1.5em;
+  }
+
+  .weather-today h2 {
+    font-size: 1.5em;
+  }
+
+  .current-day-info-header p,
+  .weather-today p {
+    font-size: 1em;
+    margin: 0;
+  }
+
+  .current-temp,
+  .current-wind-speed,
+  .current-humidity {
+    font-size: 1em;
   }
 
   .current-day-info-header {
@@ -247,6 +334,10 @@ aside {
     justify-self: start;
     align-items: start;
     gap: 0.5em;
+  }
+
+  .current-date {
+    font-size: 1.25em;
   }
 
   aside {
@@ -260,26 +351,24 @@ aside {
   }
 
   .weather-today {
+    padding-top: 0.5em;
     gap: 0.5em;
+    font-size: 1.25em;
   }
-  .weather-today h2,
-  .current-date {
-    font-size: 1em;
-    width: fit-content;
-  }
+
   .forecast-boxes {
     grid-template: repeat(5, 1fr) / 1fr;
   }
 
   .current-weather-icon {
-    width: 30%;
+    width: 50%;
   }
 
   .icon {
-    width: 7%;
+    width: 12%;
   }
 
   .five-day-forecast p {
-    font-size: 0.75em;
+    font-size: 1.25em;
   }
 }
