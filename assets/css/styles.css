@@ -210,7 +210,8 @@ aside {
   height: 40px;
 }
 
-.search {
+.search,
+.clear {
   display: grid;
   justify-content: center;
   align-content: center;

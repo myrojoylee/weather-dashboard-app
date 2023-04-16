@@ -5,6 +5,7 @@
 const WeatherAPIKey = "021e75b0e3380e236b4ff6031ae2dde4";
 const userCity = document.querySelector("#city-search-box");
 const search = document.querySelector(".search");
+const clear = document.querySelector(".clear");
 const currentCity = document.querySelector(".current-city");
 const currentTemp = document.querySelector(".current-temp");
 const currentWindSpeed = document.querySelector(".current-wind-speed");
@@ -26,7 +27,6 @@ let currentYear = currentDate.getFullYear();
 let currentMonth = currentDate.getMonth() + 1;
 let currentDayOfMonth = currentDate.getDate();
 let currentUnixTime = Date.now();
-// let diffInUnixTime;
 
 let buttonCount = 0;
 let buttonId = [];
@@ -61,6 +61,18 @@ search.addEventListener("click", function () {
     .then((response) => response.json())
     .then(obtainCurrentWeather);
 
+  // clear search history
+
+  clear.addEventListener("click", function () {
+    if (buttonId.length > 0) {
+      for (let i = 0; i < buttonId.length; i++) {
+        document.getElementById(buttonId[i]).remove();
+        buttonId.shift();
+      }
+    }
+    searchHistory = [];
+  });
+
   if (searchHistory.length > 0) {
     if (searchHistory.includes(userCity.value) === false) {
       if (buttonCount > 7) {
@@ -71,7 +83,7 @@ search.addEventListener("click", function () {
       } else {
         searchHistory.push(userCity.value);
         buttonCount++;
-        console.log(buttonCount);
+        // console.log(buttonCount);
       }
       newSearch = true;
     } else {
@@ -82,8 +94,6 @@ search.addEventListener("click", function () {
     newSearch = true;
     buttonCount++;
   }
-
-  // console.log(searchHistory);
 });
 
 // get weather from search history
@@ -108,10 +118,10 @@ function obtainCurrentWeather(weather) {
   } else {
     cityClicked === userCity.value;
     currentCity.textContent = cityClicked;
+    cityToSearch = cityClicked;
   }
 
   weatherIcon = weather.weather[0].icon;
-  // cityToSearch = cityName;
   todaysDate.textContent = ` ${currentMonth}/${currentDayOfMonth}/${currentYear}`;
   currentTemp.textContent = `${weather.main.temp}`;
   currentWindSpeed.textContent = `${weather.wind.speed}`;
@@ -121,39 +131,26 @@ function obtainCurrentWeather(weather) {
   getCoordinatesFromLocation(cityToSearch);
 
   if (newSearch === true) {
-    storeSearchHistory();
+    createSearchHistory();
   }
 }
-
-function storeSearchHistory() {
-  temporaryStorage = {
-    city: currentCity.textContent,
-    temp: `${currentTemp.textContent}`,
-    windspeed: `${currentWindSpeed.textContent}`,
-    humidity: `${currentHumidity.textContent}`,
-  };
-
-  // if (localStorage.length !== 0) {
-  //   if (localStorage.length > 7) {
-  //     searchHistory.shift();
-  //     searchHistory.push(temporaryStorage);
-  //   } else {
-  //     searchHistory.push(temporaryStorage);
-  //   }
-  // }
-
-  // storageHandling();
-  createSearchHistory();
-}
-
+// function storeSearchHistory() {
+//   temporaryStorage = {
+//     city: currentCity.textContent,
+//     temp: `${currentTemp.textContent}`,
+//     windspeed: `${currentWindSpeed.textContent}`,
+//     humidity: `${currentHumidity.textContent}`,
+//   };
+//   createSearchHistory();
+// }
 function createSearchHistory() {
-  //quick search from recent search history
-  // console.log(searchHistory);
+  // renders search history buttons
+  // if they are not duplicates
   if (newSearch === true) {
     let idButton = searchHistory[searchHistory.length - 1];
     let tempId = idButton.toLowerCase();
     buttonId.push(tempId);
-    console.log(buttonId);
+    // console.log(buttonId);
     recentlySearched = document.createElement("button");
     recentlySearched.textContent = `${searchHistory[searchHistory.length - 1]}`;
     citySearchHistory.appendChild(recentlySearched);
@@ -165,12 +162,12 @@ function createSearchHistory() {
     recentlySearched.style.marginTop = "0.5em";
     recentlySearched.style.cursor = "pointer";
     recentlySearched.setAttribute("id", tempId);
-    citySearchHistory.appendChild(recentlySearched);
+    // citySearchHistory.appendChild(recentlySearched);
   }
-
+  // adding event listeners to the newly created button elements
   recentlySearched.addEventListener("click", function (e) {
     cityClicked = e.target.textContent;
-    console.log(searchHistory);
+    // console.log(searchHistory);
     checkCity();
   });
 }
@@ -185,7 +182,6 @@ function createSearchHistory() {
 function checkCity() {
   newSearch = false;
   cityName = cityClicked;
-  // searchHistory.push(cityName);
 
   fetchWeather(cityName);
   currentCity.textContent = cityName;
@@ -228,7 +224,7 @@ function fetchFiveDayForecast() {
 function unixTimeConversions() {
   focusedFiveDayData = fiveDayData.list;
 
-  // cleared to not keep the previous city search data
+  // converting unix time to get name of day
   timeStampDays = [];
   for (let i = 0; i < fiveDayData.list.length; i++) {
     listOfTimeStamps = focusedFiveDayData[i].dt;
@@ -236,6 +232,7 @@ function unixTimeConversions() {
     dayOfTimeStamp = timeStamp.toLocaleString("en-us", { weekday: "long" });
     timeStampDays.push(dayOfTimeStamp);
   }
+
   renderFiveDayForecast();
 }
 
@@ -244,6 +241,8 @@ function renderFiveDayForecast() {
   fiveWeatherLines = [];
   fiveDayLines = [];
 
+  // next we take our array of 40 days and simplify it
+  // by removing duplicate entries to signal change of day
   for (let i = 0; i < timeStampDays.length - 1; i++) {
     if (timeStampDays[i] !== timeStampDays[i + 1]) {
       fiveWeatherLines.push(focusedFiveDayData[i + 1]);
@@ -251,6 +250,8 @@ function renderFiveDayForecast() {
     }
   }
 
+  // out of our simplified array of 5 days, we can now
+  // get the values we need and render them on the page
   for (let i = 0; i < fiveWeatherLines.length; i++) {
     const options = {
       year: "numeric",
