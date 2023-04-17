@@ -44,10 +44,24 @@ let latitude, longitude, cityCoordinate, fiveDayData, focusedFiveDayData;
 let timeStampDays = [];
 let dayChange = [];
 let newSearch = false;
+let removeIndex, numberOfButtons;
 
 // =================================================
 //          ------------ Code -----------
 // =================================================
+
+// clear search history
+
+clear.addEventListener("click", function () {
+  numberOfButtons = buttonId.length;
+  for (let i = 0; i < numberOfButtons; i++) {
+    removeIndex = buttonId[0];
+    document.getElementById(removeIndex).remove();
+    buttonId.shift();
+    searchHistory.shift();
+  }
+  newSearch = true;
+});
 
 // get weather from search
 search.addEventListener("click", function () {
@@ -60,19 +74,6 @@ search.addEventListener("click", function () {
   fetch(dailyForecastURL)
     .then((response) => response.json())
     .then(obtainCurrentWeather);
-
-  // clear search history
-
-  clear.addEventListener("click", function () {
-    if (buttonId.length > 0) {
-      for (let i = 0; i < buttonId.length; i++) {
-        document.getElementById(buttonId[i]).remove();
-        buttonId.shift();
-      }
-    }
-    searchHistory = [];
-  });
-
   if (searchHistory.length > 0) {
     if (searchHistory.includes(userCity.value) === false) {
       if (buttonCount > 7) {
