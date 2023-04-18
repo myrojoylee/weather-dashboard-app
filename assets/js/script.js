@@ -51,7 +51,6 @@ let removeIndex, numberOfButtons;
 // =================================================
 
 // clear search history
-
 clear.addEventListener("click", function () {
   numberOfButtons = buttonId.length;
   for (let i = 0; i < numberOfButtons; i++) {
@@ -74,6 +73,10 @@ search.addEventListener("click", function () {
   fetch(dailyForecastURL)
     .then((response) => response.json())
     .then(obtainCurrentWeather);
+
+  if (userCity.value === "") {
+    newSearch = false;
+  }
   if (searchHistory.length > 0) {
     if (searchHistory.includes(userCity.value) === false) {
       if (buttonCount > 7) {
@@ -84,7 +87,6 @@ search.addEventListener("click", function () {
       } else {
         searchHistory.push(userCity.value);
         buttonCount++;
-        // console.log(buttonCount);
       }
       newSearch = true;
     } else {
