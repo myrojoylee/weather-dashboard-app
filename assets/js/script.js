@@ -334,7 +334,7 @@ function renderFiveDayForecast() {
  */
 function init() {
   searchHistory = JSON.parse(localStorage.getItem("search-history"));
-  if (localStorage !== null) {
+  if (searchHistory !== null) {
     for (let i = 0; i < searchHistory.length; i++) {
       let idButton = searchHistory[i];
       let tempId = idButton.toLowerCase();
