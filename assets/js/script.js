@@ -107,7 +107,10 @@ search.addEventListener("click", function () {
   }
 });
 
-// get weather from search history
+/**
+ * get weather from search history
+ * @param {*} cityName
+ */
 function fetchWeather(cityName) {
   let queryURL =
     "https://api.openweathermap.org/data/2.5/weather?q=" +
@@ -120,7 +123,10 @@ function fetchWeather(cityName) {
     .then(obtainCurrentWeather);
 }
 
-// get weather data off of api
+/**
+ * get weather data off of api
+ * @param {*} weather
+ */
 function obtainCurrentWeather(weather) {
   if (newSearch === true) {
     cityName = userCity.value;
@@ -157,11 +163,18 @@ function obtainCurrentWeather(weather) {
   }
 }
 
+/**
+ * stores search history in local storage
+ * @returns
+ */
 function storeSearchHistory() {
   localStorage.setItem("search-history", JSON.stringify(searchHistory));
   return searchHistory;
 }
 
+/**
+ * preparing elements to be rendered
+ */
 function createSearchHistory() {
   // renders search history buttons
   storeSearchHistory();
@@ -176,10 +189,12 @@ function createSearchHistory() {
   });
 }
 
+/**
+ * creating, styling, appending search
+ * term buttons and assigning an id for each button
+ * for data manipulation if we need it
+ */
 function renderCitySearchButtons() {
-  // creating an array of button ids to loop through
-  // once we remove elements upon clicking
-  // "clear history"
   let idButton = searchHistory[searchHistory.length - 1];
   let tempId = idButton.toLowerCase();
   buttonId.push(tempId);
@@ -271,6 +286,9 @@ function unixTimeConversions() {
   renderFiveDayForecast();
 }
 
+/**
+ * rendering our 5 day forecast on the page
+ */
 function renderFiveDayForecast() {
   // cleared to not keep the previous city search data
   fiveWeatherLines = [];
@@ -311,8 +329,10 @@ function renderFiveDayForecast() {
   }
 }
 
+/**
+ * keeps search history rendered on the page upon refresh
+ */
 function init() {
-  // need to render all the search buttons upon refresh.
   if (localStorage.length > 0) {
     searchHistory = JSON.parse(localStorage.getItem("search-history"));
     for (let i = 0; i < searchHistory.length; i++) {
