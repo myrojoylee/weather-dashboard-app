@@ -77,12 +77,41 @@ search.addEventListener("click", function () {
       "&units=imperial";
     fetch(dailyForecastURL)
       .then((response) => response.json())
+      .then(userInputDataHandling())
       .then(obtainCurrentWeather);
   }
 
   // only add to search history if text field is not blank
+  // if (userCity.value !== "") {
+  //   if (searchHistory.length > 0) {
+  //     if (searchHistory.includes(userCity.value) === false) {
+  //       if (buttonCount > 7) {
+  //         searchHistory.shift();
+  //         searchHistory.push(userCity.value);
+  //         document.getElementById(buttonId[0]).remove();
+  //         buttonId.shift();
+  //       } else {
+  //         searchHistory.push(userCity.value);
+  //         buttonCount++;
+  //       }
+  //       newSearch = true;
+  //     } else {
+  //       newSearch = false;
+  //     }
+  //   } else {
+  //     searchHistory.push(userCity.value);
+  //     newSearch = true;
+  //     buttonCount++;
+  //   }
+  // } else {
+  //   newSearch = false;
+  // }
+});
+
+function userInputDataHandling() {
+  console.log(userCity.value);
   if (userCity.value !== "") {
-    if (searchHistory.length > 0) {
+    if (searchHistory !== null) {
       if (searchHistory.includes(userCity.value) === false) {
         if (buttonCount > 7) {
           searchHistory.shift();
@@ -98,6 +127,7 @@ search.addEventListener("click", function () {
         newSearch = false;
       }
     } else {
+      searchHistory = [];
       searchHistory.push(userCity.value);
       newSearch = true;
       buttonCount++;
@@ -105,7 +135,7 @@ search.addEventListener("click", function () {
   } else {
     newSearch = false;
   }
-});
+}
 
 /**
  * get weather from search history
