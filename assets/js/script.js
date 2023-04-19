@@ -333,8 +333,8 @@ function renderFiveDayForecast() {
  * keeps search history rendered on the page upon refresh
  */
 function init() {
-  if (localStorage.length > 0) {
-    searchHistory = JSON.parse(localStorage.getItem("search-history"));
+  searchHistory = JSON.parse(localStorage.getItem("search-history"));
+  if (localStorage !== null) {
     for (let i = 0; i < searchHistory.length; i++) {
       let idButton = searchHistory[i];
       let tempId = idButton.toLowerCase();
