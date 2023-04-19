@@ -38,12 +38,14 @@ let city, temp, windspeed, humidity;
 let listOfTimeStamps, timeStamp, dayOfTimeStamp;
 
 let recentlySearched;
-let cityClicked;
+let cityClicked, cityName;
 let cityToSearch, weatherIcon, fiveDayWeatherIcon;
 let latitude, longitude, cityCoordinate, fiveDayData, focusedFiveDayData;
 let timeStampDays = [];
 let dayChange = [];
 let newSearch = false;
+let buttonClicked = false;
+let refresh = false;
 let removeIndex, numberOfButtons;
 
 // =================================================
@@ -60,42 +62,48 @@ clear.addEventListener("click", function () {
     searchHistory.shift();
   }
   newSearch = true;
+  localStorage.clear();
 });
 
 // get weather from search
 search.addEventListener("click", function () {
-  let dailyForecastURL =
-    "https://api.openweathermap.org/data/2.5/weather?q=" +
-    userCity.value +
-    "&appid=" +
-    WeatherAPIKey +
-    "&units=imperial";
-  fetch(dailyForecastURL)
-    .then((response) => response.json())
-    .then(obtainCurrentWeather);
-
-  if (userCity.value === "") {
-    newSearch = false;
+  // only fetch if text field is not blank
+  if (userCity.value !== "") {
+    let dailyForecastURL =
+      "https://api.openweathermap.org/data/2.5/weather?q=" +
+      userCity.value +
+      "&appid=" +
+      WeatherAPIKey +
+      "&units=imperial";
+    fetch(dailyForecastURL)
+      .then((response) => response.json())
+      .then(obtainCurrentWeather);
   }
-  if (searchHistory.length > 0) {
-    if (searchHistory.includes(userCity.value) === false) {
-      if (buttonCount > 7) {
-        searchHistory.shift();
-        searchHistory.push(userCity.value);
-        document.getElementById(buttonId[0]).remove();
-        buttonId.shift();
+
+  // only add to search history if text field is not blank
+  if (userCity.value !== "") {
+    if (searchHistory.length > 0) {
+      if (searchHistory.includes(userCity.value) === false) {
+        if (buttonCount > 7) {
+          searchHistory.shift();
+          searchHistory.push(userCity.value);
+          document.getElementById(buttonId[0]).remove();
+          buttonId.shift();
+        } else {
+          searchHistory.push(userCity.value);
+          buttonCount++;
+        }
+        newSearch = true;
       } else {
-        searchHistory.push(userCity.value);
-        buttonCount++;
+        newSearch = false;
       }
-      newSearch = true;
     } else {
-      newSearch = false;
+      searchHistory.push(userCity.value);
+      newSearch = true;
+      buttonCount++;
     }
   } else {
-    searchHistory.push(userCity.value);
-    newSearch = true;
-    buttonCount++;
+    newSearch = false;
   }
 });
 
@@ -119,11 +127,20 @@ function obtainCurrentWeather(weather) {
     cityToSearch = userCity.value;
     currentCity.textContent = cityName;
   } else {
-    cityClicked === userCity.value;
-    currentCity.textContent = cityClicked;
-    cityToSearch = cityClicked;
+    if (buttonClicked) {
+      cityToSearch = cityClicked;
+      currentCity.textContent = cityToSearch;
+      buttonClicked = false;
+    } else {
+      if (refresh === true) {
+        currentCity.textContent = searchHistory[0];
+      } else {
+        cityToSearch = userCity.value;
+        currentCity.textContent = cityToSearch;
+      }
+    }
   }
-
+  // renders currently searched city's weather info for that day
   weatherIcon = weather.weather[0].icon;
   todaysDate.textContent = ` ${currentMonth}/${currentDayOfMonth}/${currentYear}`;
   currentTemp.textContent = `${weather.main.temp}`;
@@ -131,58 +148,61 @@ function obtainCurrentWeather(weather) {
   currentHumidity.textContent = `${weather.main.humidity}`;
   currentWeatherIcon.src = `https://openweathermap.org/img/wn/${weatherIcon}.png`;
 
+  // get data for 5 days after current day
   getCoordinatesFromLocation(cityToSearch);
 
+  // only add search term to list if it is not a duplicate
   if (newSearch === true) {
     createSearchHistory();
   }
 }
-// function storeSearchHistory() {
-//   temporaryStorage = {
-//     city: currentCity.textContent,
-//     temp: `${currentTemp.textContent}`,
-//     windspeed: `${currentWindSpeed.textContent}`,
-//     humidity: `${currentHumidity.textContent}`,
-//   };
-//   createSearchHistory();
-// }
+
+function storeSearchHistory() {
+  localStorage.setItem("search-history", JSON.stringify(searchHistory));
+  return searchHistory;
+}
+
 function createSearchHistory() {
   // renders search history buttons
-  // if they are not duplicates
+  storeSearchHistory();
   if (newSearch === true) {
-    let idButton = searchHistory[searchHistory.length - 1];
-    let tempId = idButton.toLowerCase();
-    buttonId.push(tempId);
-    // console.log(buttonId);
-    recentlySearched = document.createElement("button");
-    recentlySearched.textContent = `${searchHistory[searchHistory.length - 1]}`;
-    citySearchHistory.appendChild(recentlySearched);
-    recentlySearched.display = "flex";
-    recentlySearched.style.backgroundColor = "rgb(174, 174, 175)";
-    recentlySearched.style.width = "100%";
-    recentlySearched.style.padding = "0.5em";
-    recentlySearched.style.borderRadius = "0.25em";
-    recentlySearched.style.marginTop = "0.5em";
-    recentlySearched.style.cursor = "pointer";
-    recentlySearched.setAttribute("id", tempId);
-    // citySearchHistory.appendChild(recentlySearched);
+    renderCitySearchButtons();
   }
   // adding event listeners to the newly created button elements
   recentlySearched.addEventListener("click", function (e) {
     cityClicked = e.target.textContent;
-    // console.log(searchHistory);
+    buttonClicked = true;
     checkCity();
   });
 }
 
-// function storageHandling() {
-//   if (localStorage !== null) {
-//     searchHistory = JSON.parse(localStorage.getItem("city-info"));
-//   }
-// }
+function renderCitySearchButtons() {
+  // creating an array of button ids to loop through
+  // once we remove elements upon clicking
+  // "clear history"
+  let idButton = searchHistory[searchHistory.length - 1];
+  let tempId = idButton.toLowerCase();
+  buttonId.push(tempId);
 
-// reading weather from cities in recent history
-function checkCity() {
+  // create, style, append buttons to create search history list
+  recentlySearched = document.createElement("button");
+  recentlySearched.textContent = `${searchHistory[searchHistory.length - 1]}`;
+  citySearchHistory.appendChild(recentlySearched);
+  recentlySearched.display = "flex";
+  recentlySearched.style.backgroundColor = "rgb(174, 174, 175)";
+  recentlySearched.style.width = "100%";
+  recentlySearched.style.padding = "0.5em";
+  recentlySearched.style.borderRadius = "0.25em";
+  recentlySearched.style.marginTop = "0.5em";
+  recentlySearched.style.cursor = "pointer";
+  recentlySearched.setAttribute("id", tempId);
+}
+
+/**
+ * reading weather from cities in recent history
+ * @param {*} cityName
+ */
+function checkCity(cityName) {
   newSearch = false;
   cityName = cityClicked;
 
@@ -190,6 +210,11 @@ function checkCity() {
   currentCity.textContent = cityName;
 }
 
+/**
+ * getting city from user input and getting
+coordinates for the 5 day fetch
+ * @param {*} cityToSearch 
+ */
 function getCoordinatesFromLocation(cityToSearch) {
   let geocodeURL =
     "https://api.openweathermap.org/geo/1.0/direct?q=" +
@@ -206,6 +231,9 @@ function getCoordinatesFromLocation(cityToSearch) {
     .then(fetchFiveDayForecast);
 }
 
+/**
+ * fetching data for 5 day forecast
+ */
 function fetchFiveDayForecast() {
   let fiveDayForecastURL =
     "https://api.openweathermap.org/data/2.5/forecast?lat=" +
@@ -224,6 +252,10 @@ function fetchFiveDayForecast() {
     .then(unixTimeConversions);
 }
 
+/**
+ * data handling to convert from unix time
+ * to something we can use
+ */
 function unixTimeConversions() {
   focusedFiveDayData = fiveDayData.list;
 
@@ -278,3 +310,36 @@ function renderFiveDayForecast() {
     ].src = `https://openweathermap.org/img/wn/${fiveDayWeatherIcon}.png`;
   }
 }
+
+function init() {
+  // need to render all the search buttons upon refresh.
+  if (localStorage.length > 0) {
+    searchHistory = JSON.parse(localStorage.getItem("search-history"));
+    for (let i = 0; i < searchHistory.length; i++) {
+      let idButton = searchHistory[i];
+      let tempId = idButton.toLowerCase();
+      buttonId.push(tempId);
+      recentlySearched = document.createElement("button");
+      recentlySearched.textContent = `${searchHistory[i]}`;
+      citySearchHistory.appendChild(recentlySearched);
+      recentlySearched.display = "flex";
+      recentlySearched.style.backgroundColor = "rgb(174, 174, 175)";
+      recentlySearched.style.width = "100%";
+      recentlySearched.style.padding = "0.5em";
+      recentlySearched.style.borderRadius = "0.25em";
+      recentlySearched.style.marginTop = "0.5em";
+      recentlySearched.style.cursor = "pointer";
+      recentlySearched.setAttribute("id", tempId);
+
+      recentlySearched.addEventListener("click", function (e) {
+        cityClicked = e.target.textContent;
+        buttonClicked = true;
+        checkCity();
+      });
+    }
+  }
+  // cityName = searchHistory[searchHistory.length - 1];
+  // checkCity(cityName);
+}
+
+init();
