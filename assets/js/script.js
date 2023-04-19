@@ -61,6 +61,7 @@ clear.addEventListener("click", function () {
     buttonId.shift();
     searchHistory.shift();
   }
+  buttonCount = 0;
   newSearch = true;
   localStorage.clear();
 });
@@ -80,36 +81,12 @@ search.addEventListener("click", function () {
       .then(userInputDataHandling())
       .then(obtainCurrentWeather);
   }
-
-  // only add to search history if text field is not blank
-  // if (userCity.value !== "") {
-  //   if (searchHistory.length > 0) {
-  //     if (searchHistory.includes(userCity.value) === false) {
-  //       if (buttonCount > 7) {
-  //         searchHistory.shift();
-  //         searchHistory.push(userCity.value);
-  //         document.getElementById(buttonId[0]).remove();
-  //         buttonId.shift();
-  //       } else {
-  //         searchHistory.push(userCity.value);
-  //         buttonCount++;
-  //       }
-  //       newSearch = true;
-  //     } else {
-  //       newSearch = false;
-  //     }
-  //   } else {
-  //     searchHistory.push(userCity.value);
-  //     newSearch = true;
-  //     buttonCount++;
-  //   }
-  // } else {
-  //   newSearch = false;
-  // }
 });
 
+/**
+ * checking for empty input field
+ */
 function userInputDataHandling() {
-  console.log(userCity.value);
   if (userCity.value !== "") {
     if (searchHistory !== null) {
       if (searchHistory.includes(userCity.value) === false) {
