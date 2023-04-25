@@ -16,6 +16,14 @@ Below is an example of how a user would interact with this web application.
 
 [Click here for live demo](https://myrojoylee.github.io/weather-dashboard-app/)
 
+## Credits
+
+Special thanks to my colleagues who helped test my application for bugs:
+
+[Matthew Houston](https://github.com/houstonmp)
+
+[Andres Romero](https://github.com/aromero18020)
+
 ## License
 
 Refer to the license in the repository.
