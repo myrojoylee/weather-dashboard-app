@@ -46,7 +46,7 @@ let dayChange = [];
 let newSearch = false;
 let buttonClicked = false;
 let refresh = false;
-let removeIndex, numberOfButtons;
+let removeIndex, numberOfButtons, defaultCity;
 
 // =================================================
 //          ------------ Code -----------
@@ -68,8 +68,8 @@ clear.addEventListener("click", function () {
 
 // get weather from search
 search.addEventListener("click", function () {
-  // only fetch if text field is not blank
   if (userCity.value !== "") {
+    refresh = false;
     let dailyForecastURL =
       "https://api.openweathermap.org/data/2.5/weather?q=" +
       userCity.value +
@@ -146,14 +146,15 @@ function obtainCurrentWeather(weather) {
       buttonClicked = false;
     } else {
       if (refresh === true) {
-        currentCity.textContent = searchHistory[0];
+        currentCity.textContent = "Philadelphia";
+        cityToSearch = "Philadelphia";
       } else {
         cityToSearch = userCity.value;
         currentCity.textContent = cityToSearch;
       }
     }
   }
-  // renders currently searched city's weather info for that day
+
   weatherIcon = weather.weather[0].icon;
   todaysDate.textContent = ` ${currentMonth}/${currentDayOfMonth}/${currentYear}`;
   currentTemp.textContent = `${weather.main.temp}`;
@@ -161,10 +162,8 @@ function obtainCurrentWeather(weather) {
   currentHumidity.textContent = `${weather.main.humidity}`;
   currentWeatherIcon.src = `https://openweathermap.org/img/wn/${weatherIcon}.png`;
 
-  // get data for 5 days after current day
   getCoordinatesFromLocation(cityToSearch);
 
-  // only add search term to list if it is not a duplicate
   if (newSearch === true) {
     createSearchHistory();
   }
@@ -183,12 +182,11 @@ function storeSearchHistory() {
  * preparing elements to be rendered
  */
 function createSearchHistory() {
-  // renders search history buttons
   storeSearchHistory();
   if (newSearch === true) {
     renderCitySearchButtons();
   }
-  // adding event listeners to the newly created button elements
+
   recentlySearched.addEventListener("click", function (e) {
     cityClicked = e.target.textContent;
     buttonClicked = true;
@@ -206,7 +204,6 @@ function renderCitySearchButtons() {
   let tempId = idButton.toLowerCase();
   buttonId.push(tempId);
 
-  // create, style, append buttons to create search history list
   recentlySearched = document.createElement("button");
   recentlySearched.textContent = `${searchHistory[searchHistory.length - 1]}`;
   citySearchHistory.appendChild(recentlySearched);
@@ -280,8 +277,6 @@ function fetchFiveDayForecast() {
  */
 function unixTimeConversions() {
   focusedFiveDayData = fiveDayData.list;
-
-  // converting unix time to get name of day
   timeStampDays = [];
   for (let i = 0; i < fiveDayData.list.length; i++) {
     listOfTimeStamps = focusedFiveDayData[i].dt;
@@ -289,7 +284,6 @@ function unixTimeConversions() {
     dayOfTimeStamp = timeStamp.toLocaleString("en-us", { weekday: "long" });
     timeStampDays.push(dayOfTimeStamp);
   }
-
   renderFiveDayForecast();
 }
 
@@ -297,21 +291,18 @@ function unixTimeConversions() {
  * rendering our 5 day forecast on the page
  */
 function renderFiveDayForecast() {
-  // cleared to not keep the previous city search data
   fiveWeatherLines = [];
   fiveDayLines = [];
 
-  // next we take our array of 40 days and simplify it
-  // by removing duplicate entries to signal change of day
-  for (let i = 0; i < timeStampDays.length - 1; i++) {
-    if (timeStampDays[i] !== timeStampDays[i + 1]) {
-      fiveWeatherLines.push(focusedFiveDayData[i + 1]);
-      fiveDayLines.push(timeStampDays[i + 1]);
-    }
+  for (let i = 7; i < timeStampDays.length; i = i + 8) {
+    fiveWeatherLines.push(focusedFiveDayData[i]);
+    fiveDayLines.push(timeStampDays[i]);
+    // if (timeStampDays[i] !== timeStampDays[i + 1]) {
+    //   fiveWeatherLines.push(focusedFiveDayData[i + 1]);
+    //   fiveDayLines.push(timeStampDays[i + 1]);
+    // }
   }
 
-  // out of our simplified array of 5 days, we can now
-  // get the values we need and render them on the page
   for (let i = 0; i < fiveWeatherLines.length; i++) {
     const options = {
       year: "numeric",
@@ -340,6 +331,7 @@ function renderFiveDayForecast() {
  * keeps search history rendered on the page upon refresh
  */
 function init() {
+  refresh = true;
   searchHistory = JSON.parse(localStorage.getItem("search-history"));
   if (searchHistory !== null) {
     for (let i = 0; i < searchHistory.length; i++) {
@@ -365,8 +357,8 @@ function init() {
       });
     }
   }
-  // cityName = searchHistory[searchHistory.length - 1];
-  // checkCity(cityName);
+  cityName = "Philadelphia";
+  fetchWeather(cityName);
 }
 
 init();
